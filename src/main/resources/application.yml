@@ -1,0 +1,51 @@
+
+server:
+  port: ${PORT_EDS:9090}
+
+spring:
+  application:
+    name: ${HOSTNAME:eds-api}
+  main:
+    allow-bean-definition-overriding: true
+#logging:
+#  file: ${LOG_HOME:logs/staging/app.%d{yyyy-MM-dd}.%i.log}
+---
+spring:
+  data:
+    cassandra:
+      keyspaceName: cassandb
+      contactPoints: 127.0.0.1
+      port: 7000
+      schemaAction: CREATE_IF_NOT_EXISTS
+      username: root
+      password: 123456
+      ssl: false
+    web:
+      pageable:
+        one-indexed-parameters: true
+  jpa:
+    hibernate.ddl-auto: update
+    database-platform: ${JDBC_PLATFORM:org.hibernate.dialect.Oracle10gDialect}
+    #database-platform: ${JDBC_PLATFORM:org.hibernate.dialect.MySQL8Dialect}
+    generate-ddl: true
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: ${JDBC_DIALECT:org.hibernate.dialect.Oracle10gDialect}
+        #dialect: ${JDBC_DIALECT:org.hibernate.dialect.MySQL8Dialect}
+        format_sql: true
+  profiles:
+    active: ${LOGGING_PROFILE:staging}
+  session:
+    jdbc:
+      initialize-schema: always
+---
+spring:
+  datasource:
+    hikari:
+      connection-timeout: 20000
+      idle-timeout: 300000
+      max-lifetime: 1800000
+      minimum-idle: 10
+      maximum-pool-size: 10
+      auto-commit: true
